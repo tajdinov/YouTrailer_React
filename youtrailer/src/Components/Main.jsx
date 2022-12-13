@@ -4,19 +4,32 @@ import axios from "axios";
 
 const Main = () => {
   const [movies, setMovies] = useState([]);
-
   const movie = movies[Math.floor(Math.random() * movies.length)];
+  const [showMore, setShowMore] = useState(false);
 
   useEffect(() => {
     axios.get(requests.requestPopular).then((response) => {
       setMovies(response.data.results);
     });
   }, []);
-  // console.log(movie);
+  console.log(movie);
+
+  // const text = movie?.overview;
+
+  // function threeDots(e) {
+  //   e.preventDefault();
+  //   setShowMore(!showMore);
+  // }
+
+  const threeDots = async (e) => {
+    e.preventDefault();
+    console.log(showMore);
+    setShowMore(!showMore);
+  };
 
   const truncateString = (str, num) => {
     if (str?.length > num) {
-      return str.slice(0, num) + "...";
+      return str.slice(0, num);
     } else {
       return str;
     }
@@ -44,9 +57,15 @@ const Main = () => {
           <p className=" text-gray-400 text-sm">
             Released: {movie?.release_date}
           </p>
-          <p className=" w-full md:max-w-[70%] lg:max-w-[35%] text-gray-200">
-            {truncateString(movie?.overview, 150)}
+          <p className=" w-full md:max-w-[70%] lg:max-w-[35%] text-gray-400">
+            {/* {truncateString(movie?.overview, 150) + "..."} */}
+            {showMore
+              ? `${movie?.overview}`
+              : `${truncateString(`${movie?.overview}`, 100)}` + `...`}
           </p>
+          <button className=" text-[0.6rem]" onClick={threeDots}>
+            {showMore ? "less" : "more"}
+          </button>
         </div>
       </div>
     </div>
