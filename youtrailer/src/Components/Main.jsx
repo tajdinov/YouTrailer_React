@@ -4,14 +4,21 @@ import axios from "axios";
 
 const Main = () => {
   const [movies, setMovies] = useState([]);
-  const movie = movies[Math.floor(Math.random() * movies.length)];
+  const [movie, setMovie] = useState([]);
+  // const movie = movies[Math.floor(Math.random() * movies.length)];
+
+  useEffect(() => {
+    const movie = movies[Math.floor(Math.random() * movies.length)];
+    setMovie(movie);
+  }, [movies]);
+
   const [showMore, setShowMore] = useState(false);
 
   useEffect(() => {
     axios.get(requests.requestPopular).then((response) => {
       setMovies(response.data.results);
     });
-  }, []);
+  }, [movies]);
   console.log(movie);
 
   // const text = movie?.overview;
