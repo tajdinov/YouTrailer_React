@@ -3,9 +3,15 @@ import requests from "../request";
 import axios from "axios";
 
 const Main = () => {
-  const [movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState("");
   const [movie, setMovie] = useState([]);
   // const movie = movies[Math.floor(Math.random() * movies.length)];
+
+  useEffect(() => {
+    axios.get(requests.requestPopular).then((response) => {
+      setMovies(response.data.results);
+    });
+  }, []);
 
   useEffect(() => {
     const movie = movies[Math.floor(Math.random() * movies.length)];
@@ -13,13 +19,6 @@ const Main = () => {
   }, [movies]);
 
   const [showMore, setShowMore] = useState(false);
-
-  useEffect(() => {
-    axios.get(requests.requestPopular).then((response) => {
-      setMovies(response.data.results);
-    });
-  }, [movies]);
-  console.log(movie);
 
   // const text = movie?.overview;
 
@@ -71,7 +70,7 @@ const Main = () => {
               : `${truncateString(`${movie?.overview}`, 100)}` + `...`}
           </p>
           <button className=" text-[0.6rem]" onClick={threeDots}>
-            {showMore ? "less" : "more"}
+            {showMore ? "less" : "...more"}
           </button>
         </div>
       </div>
