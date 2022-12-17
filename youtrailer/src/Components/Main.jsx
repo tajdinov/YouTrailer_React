@@ -7,6 +7,8 @@ const Main = () => {
   const [movie, setMovie] = useState([]);
   // const movie = movies[Math.floor(Math.random() * movies.length)];
 
+  const trailer = `https://api.themoviedb.org/3/movie/{movie_id}/videos?api_key=<<api_key>>&language=en-US`;
+
   useEffect(() => {
     axios.get(requests.requestPopular).then((response) => {
       setMovies(response.data.results);
