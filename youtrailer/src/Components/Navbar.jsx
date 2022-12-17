@@ -13,8 +13,6 @@ const Navbar = () => {
 
   const [search, setSearch] = useState("");
 
-  const searchWord = search;
-
   const handleSearch = async (e) => {
     e.preventDefault();
 
@@ -49,19 +47,11 @@ const Navbar = () => {
   return (
     <div className=" flex items-center justify-between p-4 z-[100] w-full absolute">
       <Link to="/">
-        <h1 className=" text-red-600 text-4xl font-extrabold cursor-pointer">
+        <h1 className=" text-red-600 text-3xl font-extrabold cursor-pointer shadow-lg">
           YOUTRAILER
         </h1>
       </Link>
-      <div>
-        {/* <Link to="searchResults"> */}
-        <BsSearch
-          className=" text-white cursor-pointer"
-          type="button"
-          onClick={openModal}
-        />
-        {/* </Link> */}
-        <Transition appear show={isOpen} as={Fragment}>
+      {/* <Transition appear show={isOpen} as={Fragment}>
           <Dialog as="div" className="relative z-10" onClose={closeModal}>
             <Transition.Child
               as={Fragment}
@@ -116,10 +106,14 @@ const Navbar = () => {
               </div>
             </div>
           </Dialog>
-        </Transition>
-      </div>
+        </Transition> */}
       {user?.email ? (
         <div>
+          <Link to="searchResults">
+            <button className=" absolute top-7 right-[200px] pr-6">
+              <BsSearch className=" text-white cursor-pointer" type="button" />
+            </button>
+          </Link>
           <Link to="/account">
             <button className=" text-white pr-4">Account</button>
           </Link>
@@ -132,6 +126,9 @@ const Navbar = () => {
         </div>
       ) : (
         <div>
+          <Link to="searchResults">
+            <BsSearch className=" text-white cursor-pointer" type="button" />
+          </Link>
           <Link to="/login">
             <button className=" text-white pr-4">Log In</button>
           </Link>

@@ -3,7 +3,7 @@ import requests from "../request";
 import axios from "axios";
 
 const Main = () => {
-  const [movies, setMovies] = useState("");
+  const [movies, setMovies] = useState([]);
   const [movie, setMovie] = useState([]);
   // const movie = movies[Math.floor(Math.random() * movies.length)];
 
@@ -17,6 +17,7 @@ const Main = () => {
     const movie = movies[Math.floor(Math.random() * movies.length)];
     setMovie(movie);
   }, [movies]);
+  console.log(movie);
 
   const [showMore, setShowMore] = useState(false);
 
