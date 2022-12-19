@@ -1,13 +1,36 @@
 import React, { useEffect, useState } from "react";
 import requests from "../request";
 import axios from "axios";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { db } from "../firebase";
+import { UserAuth } from "../Context/AuthContext";
 
 const Main = () => {
   const [movies, setMovies] = useState([]);
   const [movie, setMovie] = useState([]);
-  // const movie = movies[Math.floor(Math.random() * movies.length)];
+  const [like, setLike] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const { user } = UserAuth();
 
-  const trailer = `https://api.themoviedb.org/3/movie/{movie_id}/videos?api_key=<<api_key>>&language=en-US`;
+  const movieId = doc(db, "users", `${user?.email}`);
+  const saveShow = async () => {
+    if (user?.email) {
+      setLike(!like);
+      setSaved(true);
+      await updateDoc(movieId, {
+        savedShows: arrayUnion({
+          id: movie.id,
+          title: movie.title,
+          img: movie.backdrop_path,
+          release: movie.release_date,
+          overview: movie.overview,
+        }),
+      });
+    } else {
+      alert("Please log in");
+    }
+  };
 
   useEffect(() => {
     axios.get(requests.requestPopular).then((response) => {
@@ -19,16 +42,8 @@ const Main = () => {
     const movie = movies[Math.floor(Math.random() * movies.length)];
     setMovie(movie);
   }, [movies]);
-  console.log(movie);
 
   const [showMore, setShowMore] = useState(false);
-
-  // const text = movie?.overview;
-
-  // function threeDots(e) {
-  //   e.preventDefault();
-  //   setShowMore(!showMore);
-  // }
 
   const threeDots = async (e) => {
     e.preventDefault();
@@ -38,7 +53,7 @@ const Main = () => {
 
   const truncateString = (str, num) => {
     if (str?.length > num) {
-      return str.slice(0, num);
+      return str.slice(0, num) + "...";
     } else {
       return str;
     }
@@ -56,24 +71,24 @@ const Main = () => {
         <div className=" absolute w-full top-[20%] p-4 md:p-8">
           <h1 className=" text-3xl md:text-5xl font-bold">{movie?.title}</h1>
           <div className=" my-4">
-            <button className=" border bg-gray-300 text-black border-gray-300 py-2 px-5">
-              Play
-            </button>
-            <button className=" border  text-white border-gray-300 py-2 px-5 ml-4">
-              Watch Later
+            <button onClick={saveShow} className="">
+              {like ? (
+                <FaHeart className="  text-gray-300  text-3xl cursor-pointer" />
+              ) : (
+                <FaRegHeart className="  text-gray-300  text-3xl cursor-pointer" />
+              )}
             </button>
           </div>
           <p className=" text-gray-400 text-sm">
             Released: {movie?.release_date}
           </p>
           <p className=" w-full md:max-w-[70%] lg:max-w-[35%] text-gray-400">
-            {/* {truncateString(movie?.overview, 150) + "..."} */}
             {showMore
               ? `${movie?.overview}`
-              : `${truncateString(`${movie?.overview}`, 100)}` + `...`}
+              : `${truncateString(`${movie?.overview}`, 100)}`}
           </p>
           <button className=" text-[0.6rem]" onClick={threeDots}>
-            {showMore ? "less" : "...more"}
+            {showMore ? "less" : "more"}
           </button>
         </div>
       </div>

@@ -11,38 +11,22 @@ const Movie = ({ item }) => {
   const key = process.env.REACT_APP_IMDB_API_KEY;
   const trailerUrl = `https://api.themoviedb.org/3/movie/${item?.id}/videos?api_key=${key}&language=en-US`;
   const [like, setLike] = useState(false);
-  const [error, setError] = useState("");
   const [trailers, setTrailers] = useState([]);
   const [trailer, setTrailer] = useState([]);
   const [saved, setSaved] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { user } = UserAuth();
 
-  // const trailerRequest = async (e) => {
-  //   e.preventDefault();
-  //   setError("");
-  //   try {
-  //     axios.get(trailerUrl).then((response) => {
-  //       setTrailer(response.data.results);
-  //     });
-  //   } catch {
-  //     console.log(error);
-  //   }
-  // };
-
   useEffect(() => {
     axios.get(trailerUrl).then((response) => {
       setTrailers(response.data.results);
     });
-  }, []);
+  }, [trailerUrl]);
 
   useEffect(() => {
     const trailer = trailers[Math.floor(Math.random() * trailers.length)];
     setTrailer(trailer);
   }, [trailers]);
-  console.log(trailer);
-
-  console.log(trailer?.key);
 
   const movieId = doc(db, "users", `${user?.email}`);
 
@@ -55,6 +39,8 @@ const Movie = ({ item }) => {
           id: item.id,
           title: item.title,
           img: item.backdrop_path,
+          release: item.release_date,
+          overview: item.overview,
         }),
       });
     } else {
@@ -83,7 +69,10 @@ const Movie = ({ item }) => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-black bg-opacity-90" />
+            <div
+              className="fixed inset-0 bg-black bg-opacity-90"
+              aria-hidden="true"
+            />
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto">
@@ -97,7 +86,7 @@ const Movie = ({ item }) => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-4xl p-6 overflow-hidden text-left align-middle transition-all transform bg-black/80 shadow-2xl rounded-2xl border-2 border-white/40 text-white">
+                <Dialog.Panel className=" mx-auto w-full max-w-4xl  overflow-hidden text-left align-middle transition-all transform bg-black/80 shadow-2xl rounded-2xl border-2 border-white/20 text-white">
                   <div className=" w-full h-[550px] text-white">
                     <div className=" w-full h-full">
                       <div className=" absolute w-full h-[550px] bg-gradient-to-r from-black"></div>
@@ -107,25 +96,16 @@ const Movie = ({ item }) => {
                         src={`https://image.tmdb.org/t/p/original/${item?.backdrop_path}`}
                         alt={item?.title}
                       />
-                      <div className=" absolute w-full top-[20%] p-4 md:p-8">
+                      <div className=" absolute w-full top-[1%] p-4 md:p-8">
                         <h1 className=" text-xl md:text-2xl font-bold">
                           {item?.title}
                         </h1>
-                        <div className=" my-4">
-                          <button
-                            className=" border bg-gray-300 text-black border-gray-300 py-2 px-5"
-                            // onClick={trailerRequest}
-                          >
-                            Play Trailer
-                          </button>
-                        </div>
+
                         <p className=" text-gray-400 text-sm pb-1">
                           Released: {item?.release_date}
                         </p>
-                        <p className=" text-gray-400 text-sm pb-1">
-                          Released: {item?.release_date}
-                        </p>
-                        <p className=" w-full pr-10 md:max-w-[70%] lg:max-w-[35%] text-white">
+
+                        <p className=" w-full pr-10 pt-2 text-white">
                           {item?.overview}
                         </p>
                         <p onClick={saveShow}>
@@ -136,9 +116,8 @@ const Movie = ({ item }) => {
                           )}
                         </p>
                         <iframe
-                          className="mt-2 object-cover"
+                          className="mt-6 object-cover rounded border-2 border-white/10"
                           src={`https://www.youtube.com/embed/${trailer?.key}`}
-                          // [0].key
                           title="YouTube video player"
                           frameBorder="0"
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

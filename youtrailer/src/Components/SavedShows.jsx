@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
+
+// import axios from "axios";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { UserAuth } from "../Context/AuthContext";
 import { db } from "../firebase";
@@ -7,8 +9,31 @@ import { AiOutlineClose } from "react-icons/ai";
 
 const SavedShows = () => {
   const [movies, setMovies] = useState([]);
-
   const { user } = UserAuth();
+  // const key = process.env.REACT_APP_IMDB_API_KEY;
+
+  // const [itemId, setItemId] = useState("");
+  // const trailerUrl = `https://api.themoviedb.org/3/movie/${itemId}/videos?api_key=${key}&language=en-US`;
+  // const [trailers, setTrailers] = useState([]);
+  // const [trailer, setTrailer] = useState([]);
+  // const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    onSnapshot(doc(db, "users", `${user?.email}`), (doc) => {
+      setMovies(doc.data()?.savedShows);
+    });
+  }, [user?.email]);
+
+  // useEffect(() => {
+  //   axios.get(trailerUrl).then((response) => {
+  //     setTrailers(response.data.results);
+  //   });
+  // }, []);
+
+  // useEffect(() => {
+  //   const trailer = trailers[Math.floor(Math.random() * trailers.length)];
+  //   setTrailer(trailer);
+  // }, [trailers]);
 
   const slideLeft = () => {
     var slider = document.getElementById("slider");
@@ -19,11 +44,13 @@ const SavedShows = () => {
     slider.scrollLeft = slider.scrollLeft + 500;
   };
 
-  useEffect(() => {
-    onSnapshot(doc(db, "users", `${user?.email}`), (doc) => {
-      setMovies(doc.data()?.savedShows);
-    });
-  }, [user?.email]);
+  // function closeModal() {
+  //   setIsOpen(false);
+  // }
+
+  // function openModal() {
+  //   setIsOpen(true);
+  // }
 
   const movieRef = doc(db, "users", `${user?.email}`);
   const deleteShow = async (passedId) => {
@@ -53,7 +80,7 @@ const SavedShows = () => {
           {movies.map((item, id) => (
             <div
               key={id}
-              className=" w-[160px] sm:w-[200px] md:w-[240px] lg:w-[280px] inline-block cursor-pointer relative p-2"
+              className=" w-[160px] sm:w-[200px] md:w-[240px] lg:w-[280px] inline-block relative p-2"
             >
               <img
                 className=" w-full h-auto block"
@@ -61,14 +88,17 @@ const SavedShows = () => {
                 alt={item?.title}
               />
               <div className=" absolute top-0 left-0 w-full h-full hover:bg-black/80 opacity-0 hover:opacity-100 text-white duration-500">
-                <p className="white-space-normal text-xs md:text-sm font-bold flex justify-center items-center h-full text-center">
+                <p
+                  className="white-space-normal text-xs md:text-sm font-bold flex justify-center items-center cursor-default h-full text-center"
+                  // onClick={openModal}
+                >
                   {item?.title}
                 </p>
                 <p
                   onClick={() => deleteShow(item.id)}
                   className=" absolute text-gray-300 top-4 right-4"
                 >
-                  <AiOutlineClose />
+                  <AiOutlineClose className=" cursor-pointer" />
                 </p>
               </div>
             </div>
