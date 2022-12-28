@@ -20,20 +20,20 @@ const Navbar = () => {
   return (
     <div className=" flex items-center justify-between p-4 z-[100] w-full absolute">
       <Link to="/">
-        <h1 className=" text-red-600 text-3xl font-extrabold cursor-pointer shadow-lg">
-          YOUTRAILER
+        <h1 className=" text-red-600 text-2xl font-extrabold cursor-pointer shadow-lg">
+          YT
         </h1>
       </Link>
 
       {user?.email ? (
         <div>
-          <Link to="searchResults">
-            <button className=" absolute top-7 right-[200px] pr-6">
+          <Link to="/searchResults">
+            <button className=" px-6 text-lg">
               <BsSearch className=" text-white cursor-pointer" type="button" />
             </button>
           </Link>
           <Link to="/account">
-            <button className=" text-white pr-4">Account</button>
+            <button className=" text-white pr-4 ">Account</button>
           </Link>
           <button
             onClick={handleLogout}
@@ -44,13 +44,15 @@ const Navbar = () => {
         </div>
       ) : (
         <div>
-          <Link to="searchResults">
-            <BsSearch className=" text-white cursor-pointer" type="button" />
+          <Link to="/searchResults">
+            <button className=" px-6 text-lg">
+              <BsSearch className=" text-white cursor-pointer" type="button" />
+            </button>
           </Link>
           <Link to="/login">
             <button className=" text-white pr-4">Log In</button>
           </Link>
-          <Link to="signup">
+          <Link to="/signup">
             <button className=" bg-red-600 px-6 py-2 rounded cursor-pointer text-white hover:bg-red-800">
               Sign Up
             </button>

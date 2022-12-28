@@ -105,7 +105,7 @@ const Movie = ({ item }) => {
                           Released: {item?.release_date}
                         </p>
 
-                        <p className=" w-full pr-10 pt-2 text-white">
+                        <p className=" w-full pt-2 text-white">
                           {item?.overview}
                         </p>
                         <p onClick={saveShow}>
